@@ -1,5 +1,7 @@
 package mastoclient
 
+import "net/url"
+
 // AsyncGetAccountStatusesInput is a struct for getting statuses asynchronously
 type AsyncGetAccountStatusesInput struct {
 	ID      string
@@ -27,4 +29,12 @@ type AsyncGetNotificationsInput struct {
 	SinceID *string
 	MinID   *string
 	Ch      chan AsyncNotices
+}
+
+type RegisterAppInput struct {
+	ClientName  string
+	InstanceURL *url.URL
+	RedirectURI *url.URL
+	Scopes      []string
+	Website     string
 }

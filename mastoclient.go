@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/url"
+	"strings"
 
 	"github.com/mattn/go-mastodon"
 	"github.com/rs/zerolog"
@@ -140,4 +141,18 @@ func (c *Config) Post(toot *mastodon.Toot) (*mastodon.ID, error) {
 	} else {
 		return &status.ID, nil
 	}
+}
+
+func RegisterApp(input *RegisterAppInput) (*mastodon.Application, error) {
+	app, err := mastodon.RegisterApp(context.Background(), &mastodon.AppConfig{
+		Server:       input.InstanceURL.String(),
+		ClientName:   input.ClientName,
+		RedirectURIs: input.RedirectURI.String(),
+		Scopes:       strings.Join(input.Scopes, " "),
+		Website:      input.Website,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return app, nil
 }
