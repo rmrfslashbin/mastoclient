@@ -156,3 +156,16 @@ func RegisterApp(input *RegisterAppInput) (*mastodon.Application, error) {
 	}
 	return app, nil
 }
+
+func (c *Config) GetAuthTokenFromCode(authCode *string, redirectURI *string) (*string, error) {
+	client, err := c.preflight()
+	if err != nil {
+		return nil, err
+	}
+
+	if err = client.AuthenticateToken(context.Background(), *authCode, *redirectURI); err != nil {
+		return nil, err
+	}
+
+	return &client.Config.AccessToken, nil
+}
