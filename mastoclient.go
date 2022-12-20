@@ -69,6 +69,31 @@ func WithLogger(log *zerolog.Logger) Option {
 	}
 }
 
+// SetAccessToken sets the access token
+func (c *Config) SetAccessToken(accessToken string) {
+	c.accessToken = accessToken
+}
+
+// SetClientKey sets the client key
+func (c *Config) SetClientKey(clientKey string) {
+	c.clientKey = clientKey
+}
+
+// SetClientSecret sets the client secret
+func (c *Config) SetClientSecret(clientSecret string) {
+	c.clientSecret = clientSecret
+}
+
+// SetInstance sets the instance
+func (c *Config) SetInstance(instance *url.URL) {
+	c.instance = instance
+}
+
+// SetLogger sets the logger
+func (c *Config) SetLogger(log *zerolog.Logger) {
+	c.log = log
+}
+
 // prefight checks if the config is set up correctly and returns a mastodon client
 func (c *Config) preflight() (*mastodon.Client, error) {
 	// Check set up
