@@ -3,7 +3,6 @@ package mastoclient
 import (
 	"context"
 	"fmt"
-	"net/url"
 	"strings"
 
 	"github.com/mattn/go-mastodon"
@@ -16,7 +15,7 @@ type Option func(c *Config)
 // Config for the weather query
 type Config struct {
 	log          *zerolog.Logger
-	instance     *url.URL
+	instance     string
 	clientKey    string
 	clientSecret string
 	accessToken  string
@@ -56,7 +55,7 @@ func WithClientSecret(clientSecret string) Option {
 }
 
 // WithInstance sets the instance to use
-func WithInstance(instance *url.URL) Option {
+func WithInstance(instance string) Option {
 	return func(c *Config) {
 		c.instance = instance
 	}
@@ -85,7 +84,7 @@ func (c *Config) SetClientSecret(clientSecret string) {
 }
 
 // SetInstance sets the instance
-func (c *Config) SetInstance(instance *url.URL) {
+func (c *Config) SetInstance(instance string) {
 	c.instance = instance
 }
 
@@ -97,7 +96,7 @@ func (c *Config) SetLogger(log *zerolog.Logger) {
 // prefight checks if the config is set up correctly and returns a mastodon client
 func (c *Config) preflight() (*mastodon.Client, error) {
 	// Check set up
-	if c.instance == nil {
+	if c.instance == "" {
 		return nil, &NoInstanceError{}
 	}
 
@@ -115,7 +114,7 @@ func (c *Config) preflight() (*mastodon.Client, error) {
 
 	// Set up Mastodon client
 	client := mastodon.NewClient(&mastodon.Config{
-		Server:       c.instance.String(),
+		Server:       c.instance,
 		ClientID:     c.clientKey,
 		ClientSecret: c.clientSecret,
 		AccessToken:  c.accessToken,
@@ -170,9 +169,9 @@ func (c *Config) Post(toot *mastodon.Toot) (*mastodon.ID, error) {
 
 func RegisterApp(input *RegisterAppInput) (*mastodon.Application, error) {
 	app, err := mastodon.RegisterApp(context.Background(), &mastodon.AppConfig{
-		Server:       input.InstanceURL.String(),
+		Server:       input.InstanceURL,
 		ClientName:   input.ClientName,
-		RedirectURIs: input.RedirectURI.String(),
+		RedirectURIs: input.RedirectURI,
 		Scopes:       strings.Join(input.Scopes, " "),
 		Website:      input.Website,
 	})
